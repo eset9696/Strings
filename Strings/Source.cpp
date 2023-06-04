@@ -1,4 +1,4 @@
-#include <iostream>
+Ôªø#include <iostream>
 #include <Windows.h>
 
 int StringLength(const char* str);
@@ -21,7 +21,7 @@ void main() {
 	const int SIZE = 256;
 	char str[SIZE] = {};
 
-	cout << "¬‚Â‰ËÚÂ ÒÚÓÍÛ: " << endl;
+	cout << "–í–≤–µ–¥–∏—Ç–µ —Å—Ç—Ä–æ–∫—É: " << endl;
 
 	SetConsoleCP(1251);
 	
@@ -32,7 +32,7 @@ void main() {
 	cout << To_Lower(str) << endl;
 	cout << To_Upper(str) << endl;
 
-	char str1[] = "’ÓÓ¯Ó        ÊË‚ÂÚ    Ì‡   Ò‚ÂÚÂ      ¬ËÌÌË    œÛı";
+	char str1[] = "–•–æ—Ä–æ—à–æ        –∂–∏–≤–µ—Ç    –Ω–∞   —Å–≤–µ—Ç–µ      –í–∏–Ω–Ω–∏    –ü—É—Ö";
 
 	cout << Shrink(str1) << endl;
 	cout << Is_Palindrome(str) << endl;
@@ -56,10 +56,10 @@ char* To_Lower(char* str){
 		if (*(str + i) >= 'A' && *(str + i) <= 'Z') {
 			*(str + i) += 32;
 		}
-		if(*(str + i) >= '¿' && *(str + i) <= 'ﬂ'){
+		if(*(str + i) >= '–ê' && *(str + i) <= '–Ø'){
 			*(str + i) += 32;
 		}
-		if (*(str + i) == '®') {
+		if (*(str + i) == '–Å') {
 			*(str + i) += 16;
 		}
 	}
@@ -70,10 +70,10 @@ char* To_Upper(char* str) {
 		if (*(str + i) >= 'a' && *(str + i) <= 'z') {
 			*(str + i) -= 32;
 		}
-		if (*(str + i) >= '‡' && *(str + i) <= 'ˇ') {
+		if (*(str + i) >= '–∞' && *(str + i) <= '—è') {
 			*(str + i) -= 32;
 		}
-		if (*(str + i) == '∏') {
+		if (*(str + i) == '—ë') {
 			*(str + i) -= 16;
 		}
 	}
@@ -153,6 +153,6 @@ int To_Int_Number(char* str) {
 			j *= 10;
 		}
 	}
-	else cout << "—ÚÓÍ‡ ÌÂ ˇ‚ÎˇÂÚÒˇ ˜ËÒÎÓÏ ÙÛÌÍˆËˇ ‚ÂÌÂÚ: 0" << endl;
+	else cout << "–°—Ç—Ä–æ–∫–∞ –Ω–µ —è–≤–ª—è–µ—Ç—Å—è —á–∏—Å–ª–æ–º —Ñ—É–Ω–∫—Ü–∏—è –≤–µ—Ä–Ω–µ—Ç: 0" << endl;
 	return result;
 }

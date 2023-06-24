@@ -1,22 +1,25 @@
-﻿#include <iostream>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
 #include <Windows.h>
+
+using namespace std;
 
 int StringLength(const char* str);
 char* To_Lower(char* str);
 char* To_Upper(char* str);
-int SizeWithoutSpaces(char* str);
-int SizeWithoutExcessSpaces(char* str);
 char* Shrink(char* str);
-char* Del_Spaces(char* str);
-bool Is_Palindrome(char* str);
-bool Is_Int_Number(char* str);
-int To_Int_Number(char* str);
-using namespace std;
+char* RemoveSymbol(char str[], const char symbol);
+bool Is_Palindrome(const char* str);
+bool Is_Int_Number(const char* str);
+int To_Int_Number(const char* str);
+bool Is_Hex_Number(const char* str);
+int From_Hex_To_Int_Number(const char* str);
+bool Is_Bin_Number(const char* str);
+int From_Bin_To_Int_Number(const char* str);
+//int From_Hex_To_Int_Number2(const char* str);
+
 void main() {
 	setlocale(LC_ALL, "");
-
-	/*char str[] = "Hello";
-	cout << str << endl;*/
 
 	const int SIZE = 256;
 	char str[SIZE] = {};
@@ -29,19 +32,30 @@ void main() {
 
 	cout << str << endl;
 	cout << StringLength(str) << endl;
-	cout << To_Lower(str) << endl;
-	cout << To_Upper(str) << endl;
 
 	char str1[] = "Хорошо        живет    на   свете      Винни    Пух";
 
 	cout << Shrink(str1) << endl;
-	cout << Is_Palindrome(str) << endl;
-	cout << Is_Int_Number(str) << endl;
+	cout << "Строка " << (Is_Palindrome(str) == 1? "" : "НЕ " ) << "является палиндромом!" << endl;
 
-	int result = To_Int_Number(str);
+	if (Is_Int_Number(str) == 1) {
+		cout << "Строка является целым числом и его значение в десятиричной системе исчисления равно: "
+			<< To_Int_Number(str) << endl;
+	}
+	else cout << "Строка не является десятичным числом" << endl;
 
-	cout << result << endl;
-	
+	if(Is_Hex_Number(str) == 1){
+		cout << "Строка является шестнадцатиричным числом и его значение в десятиричной системе исчисления равно: " 
+			<< From_Hex_To_Int_Number(str) << endl;
+	}else cout << "Строка не является шестнадцатиричным числом" << endl;
+
+	if(Is_Bin_Number(str) == 1){
+		cout << "Строка является двоичным числом и его значение в десятиричной системе исчисления равно: " 
+			<< From_Bin_To_Int_Number(str) << endl;
+	}else cout << "Строка не является двоичным числом" << endl;
+
+	cout << "Введенная строка приведенная к нижнему регистру:\t" << To_Lower(str) << endl;
+	cout << "Введенная строка приведенная к верхнему регистру:\t" << To_Upper(str) << endl;
 }
 int StringLength(const char* str) {
 	int i = 0;
@@ -49,7 +63,6 @@ int StringLength(const char* str) {
 		i++;
 	}
 	return i;
-	
 }
 char* To_Lower(char* str){
 	for(int i = 0; str[i]; i++){
@@ -79,72 +92,56 @@ char* To_Upper(char* str) {
 	}
 	return str;
 }
-int SizeWithoutSpaces(char* str) {
-	int count = 0;
-	int length = StringLength(str);
-	for (int i = 0; str[i]; i++) {
-		if (*(str + i) == ' ') {
-			count++;
-		}
-	}
-	int size = length - count;
-	return size;
-}
-int SizeWithoutExcessSpaces(char* str){
-	int count = 0;
-	int length = StringLength(str);
-	for (int i = 0; str[i]; i++) {
-		if (*(str + i - 1) == ' ' && *(str + i) == ' ') {
-			count++;
-		}
-	}
-	int size = length - count;
-	return size;
-}
 char* Shrink(char* str) {
-	int size = SizeWithoutExcessSpaces(str);
-	char* buffer = new char[size];
-	for (int i = 0, j = 0; j <= size; i++) {
-		if (*(str + i - 1) != ' '|| *(str + i) != ' ') {
-			buffer[j] = str[i];
-			j++;
+	for (int i = 0; str[i]; i++){
+		while(str[i] == ' ' && str[i + 1] == ' '){
+			for(int j = i + 1; str[j]; j++){
+				str[j] = str[j + 1];
+			}
 		}
 	}
-	return buffer;
-}
-char* Del_Spaces(char* str) {
-	int size = SizeWithoutSpaces(str);
-	char* buffer = new char[size];
-	for (int i = 0, j = 0; j <= size; i++) {
-		if (*(str + i) != ' ') {
-			buffer[j] = str[i];
-			j++;
+	while(str[0] == ' '){
+		for(int i = 0; str[i]; i++){
+			str[i] = str[i + 1];
 		}
 	}
-	return buffer;
+	return str;
 }
-bool Is_Palindrome(char* str){
-	str = To_Lower(str);
-	str = Del_Spaces(str);
+char* RemoveSymbol(char str[], const char symbol){
+	for (int i = 0; str[i]; i++) {
+		while (str[i] == symbol) {
+			for (int j = i; str[j]; j++) {
+				str[j] = str[j + 1];
+			}
+		}
+	}
+	return str;
+}
+bool Is_Palindrome(const char* str){
 	int length = StringLength(str);
+	char* buffer = new char[length + 1] {};
+	strcpy(buffer, str);
+	RemoveSymbol(buffer, ' ');
+	To_Lower(buffer);
+	length = StringLength(buffer);
+	for (int i = 0; buffer[i]; i++) {
+		if (buffer[i] != buffer[length - 1 - i]) {
+			delete buffer;
+			return false;
+		}
+	}
+	delete buffer;
+	return true;
+}
+bool Is_Int_Number(const char* str) {
 	for (int i = 0; str[i]; i++) {
-		if (str[i] != str[length - 1 - i]) {
+		if (str[i] < '0' || str[i] > '9') {
 			return false;
 		}
 	}
 	return true;
 }
-bool Is_Int_Number(char* str) {
-	str = Del_Spaces(str);
-	for (int i = 0; str[i]; i++) {
-		if (str[i] < 48 || str[i] > 57) {
-			return false;
-		}
-	}
-	return true;
-}
-int To_Int_Number(char* str) {
-	str = Del_Spaces(str);
+int To_Int_Number(const char* str) {
 	int length = StringLength(str);
 	int result = 0;
 	if (Is_Int_Number(str)) {
@@ -153,6 +150,105 @@ int To_Int_Number(char* str) {
 			j *= 10;
 		}
 	}
-	else cout << "Строка не является числом функция вернет: 0" << endl;
+	return result;
+}bool Is_Hex_Number(const char* str) { 
+	int length = StringLength(str);
+	char* buffer = new char[length + 1] {};
+	strcpy(buffer, str);
+	if (buffer[0] == '0' && buffer[1] == 'x') { //Чтобы не было путаницы является ли например число 101 десятичным или
+		To_Upper(buffer);						// шестнадцатиричным обяжем писать шестнадцатиричные числа в виде 0x101
+		for (int i = 2; buffer[i]; i++) {
+			if (buffer[i] < '0' || buffer[i] > 'F') return false;
+			if (buffer[i] > 57 && buffer[i] < 65) return false;
+		}
+	}
+	else return false;
+	delete[] buffer;
+	return true;
+}
+int Hex_Symbol_To_Integer(const char symbol){
+	int result = 0;
+	for (char i = '0'; i <= '9'; i++) {
+		if (i == symbol) return result;
+		result++;
+	}
+	result = 10;
+	for (char i = 'A'; i <= 'F'; i++){
+		if (i == symbol) return result;
+		result++;
+	}
+	return 0;
+}
+
+int From_Hex_To_Int_Number(const char* str) {
+	int length = StringLength(str);
+	int result = 0;
+	if (Is_Hex_Number(str)) {
+		char* buffer = new char[length + 1] {};
+		strcpy(buffer, str);
+		To_Upper(buffer);
+		int i = 0;
+		int j = 1;
+		while(buffer[length - i - 1] != 'X'){
+			result += Hex_Symbol_To_Integer(buffer[length - i - 1])* j;
+			j *= 16;
+			i++;
+		}
+		delete[] buffer;
+	}
 	return result;
 }
+bool Is_Bin_Number(const char* str){
+	int length = StringLength(str);
+	if (str[0] == '0' && str[1] == 'b') { //Чтобы не было путаницы является ли например число 101 десятичным или
+		for (int i = 2; str[i]; i++) {    // шестнадцатиричным обяжем писать шестнадцатиричные числа в виде 0b101
+			if (str[i] < '0' || str[i] > '1') return false;
+		}
+	}
+	else return false;
+	return true;
+}
+int From_Bin_To_Int_Number(const char* str){
+	int length = StringLength(str);
+	int result = 0;
+	if(Is_Bin_Number(str)){
+		int i = 0;
+		int j = 1;
+		while (str[length - i - 1] != 'b') {
+			result += (str[length - i - 1] - '0') * j;
+			j *= 2;
+			i++;
+		}
+	}
+	return result;
+}
+//int From_Hex_To_Int_Number2(const char* str) {
+//	int length = StringLength(str);
+//	int result = 0;
+//	if (Is_Hex_Number(str)) {
+//		char* buffer = new char[length + 1] {};
+//		strcpy(buffer, str);
+//		To_Upper(buffer);
+//		int i = 0;
+//		int k = 1;
+//		while (buffer[length - i - 1] != 'x') {
+//			int number = 0;
+//			for (char j = '0'; j <= '9'; j++) {
+//				if (buffer[length - i - 1] == j) {
+//					result += number * k;
+//					k *= 16;
+//				}else number++;
+//			}
+//			number = 10;
+//			for (char j = 'A'; j <= 'F'; j++) {
+//				if (buffer[length - i - 1] == j) {
+//					result += number * k;
+//					k *= 16;
+//				}else number++;
+//			}
+//			i++;
+//		}
+//		delete[] buffer;
+//	}
+//	return result;
+//}
